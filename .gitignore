@@ -23,6 +23,7 @@ Carthage/Checkouts/
 
 # Derived Data
 DerivedData/
+APIConfig.swift
 
 # Playgrounds
 timeline.xctimeline
