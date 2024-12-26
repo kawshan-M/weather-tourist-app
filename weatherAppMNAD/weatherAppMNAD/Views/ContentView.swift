@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var viewModel: ViewModel
+    @State private var selectedMark: City?
+    @State var cityName: String = ""
     
     var body: some View {
         TabView {
@@ -16,12 +19,12 @@ struct ContentView: View {
                     Image(systemName: "cloud.sun.fill")
                     Text("Now")
                 }
-            MapView()
+            MapView(selectedMark: $selectedMark)
                 .tabItem {
                     Image(systemName: "map.fill")
                     Text("Map")
                 }
-            PlacesView()
+            VisitedPlacesView()
                 .tabItem {
                     Image(systemName: "list.bullet")
                     Text("Stored")
@@ -33,4 +36,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(ViewModel())
 }

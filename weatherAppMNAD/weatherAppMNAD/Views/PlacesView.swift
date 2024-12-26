@@ -8,11 +8,38 @@
 import SwiftUI
 
 struct PlacesView: View {
+    @EnvironmentObject var viewModel: ViewModel
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            List {
+                ForEach(City.allCases) { city in
+                    HStack {
+                        Text(city.name)
+                        
+                        Spacer()
+                        
+                        if viewModel.selectedCities.contains(city) {
+                            Button {
+                                viewModel.selectedCities.remove(city)
+                            } label: {
+                                Image(systemName: "xmark.circle")
+                            }
+                        } else {
+                            Button {
+                                viewModel.selectedCities.insert(city)
+                            } label: {
+                                Image(systemName: "plus.circle")
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
 #Preview {
     PlacesView()
+        .environmentObject(ViewModel())
 }

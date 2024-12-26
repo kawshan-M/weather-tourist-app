@@ -10,6 +10,7 @@ import FirebaseCore
 
 @main
 struct weatherAppMNADApp: App {
+    @StateObject var viewModel = ViewModel()
     init() {
         FirebaseApp.configure()
     }
@@ -17,6 +18,7 @@ struct weatherAppMNADApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(viewModel)
         }
     }
 }

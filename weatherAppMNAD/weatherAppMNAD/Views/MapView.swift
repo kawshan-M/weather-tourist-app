@@ -6,13 +6,27 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct MapView: View {
+    @EnvironmentObject var viewModel: ViewModel
+    @Binding var selectedMark: City?
+    @State private var showAlert = false
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            Map(selection: $selectedMark) {
+                ForEach(Array(viewModel.selectedCities)) { city in
+                    Marker(city.name, coordinate: city.coordinates)
+                }
+            }
+            .navigationTitle("Map View")
+            .navigationBarTitleDisplayMode(.inline)
+        }
     }
 }
 
 #Preview {
-    MapView()
+    MapView(selectedMark: .constant(.london))
+        .environmentObject(ViewModel())
 }

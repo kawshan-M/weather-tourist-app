@@ -8,21 +8,25 @@
 import SwiftUI
 
 struct WeatherCard: View {
+    let time: String
     let temperature: String
-    let description: String
     
     var body: some View {
-        VStack {
-            Text(temperature)
-                .font(.system(size: 48, weight: .bold))
-            Text(description)
+        VStack(spacing: 20){
+            Text(time)
+                .font(.title3.bold())
+                .foregroundColor(.white)
+            
+            Image(systemName: "cloud.fill")
                 .font(.title2)
+                .foregroundColor(.yellow)
+            
+            Text(temperature)
+                .font(.body.bold())
+                .foregroundColor(.white)
         }
         .padding()
-        .background(Color.blue.opacity(0.2))
-        .cornerRadius(12)
     }
-    
 }
 
 //#Preview {
