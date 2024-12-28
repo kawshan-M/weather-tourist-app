@@ -7,21 +7,26 @@
 
 import Foundation
 
-/* Code for AirDataModel Struct */
-
-struct AirDataModel: Codable{
-
-    // MARK:  list of attributes to map response from openweather pollution api
+struct AirQualityData: Codable {
+    let list: [AirQualityDetails]
 }
 
-struct AirQualityResponse: Codable {
-    let list: [AirQualityItem]
-}
-
-struct AirQualityItem: Codable {
+struct AirQualityDetails: Codable {
     let main: AirQualityMain
+    let components: AirQualityComponents
 }
 
 struct AirQualityMain: Codable {
-    let aqindex: Int
+    let aqi: Int
+}
+
+struct AirQualityComponents: Codable {
+    let co: Double
+    let no: Double
+    let no2: Double
+    let o3: Double
+    let so2: Double
+    let pm2_5: Double
+    let pm10: Double
+    let nh3: Double
 }

@@ -13,6 +13,7 @@ class WeatherViewModel: ObservableObject {
     @Published var dailyWeatherUI: [DailyWeatherUI] = []
 //    @Published var hourlyWeather: [HourlyWeather] = []
 //    @Published var dailyWeather: [DailyWeather] = []
+    @Published var timezone: String = "Unknown Location"
     @Published var cityName: String = "Location"
     @Published var tempMin: String = "--"
     @Published var tempMax: String = "--"
@@ -31,11 +32,17 @@ class WeatherViewModel: ObservableObject {
                 self.tempMin = "\(Int(decodedData.daily.first?.temp.min ?? 0))°"
                 self.tempMax = "\(Int(decodedData.daily.first?.temp.max ?? 0))°"
                 self.currentWeather = decodedData.current
+                self.timezone = decodedData.timezone
+                self.cityName = self.extractCityName(from: decodedData.timezone)
                 self.hourlyWeatherUI = decodedData.hourly.map { HourlyWeatherUI(hour: $0) }
                 self.dailyWeatherUI = decodedData.daily.map { DailyWeatherUI(day: $0) }
             }
         } catch {
             print("Error fetching weather data: \(error)")
         }
+    }
+    
+    private func extractCityName(from timezone: String) -> String {
+        return timezone.components(separatedBy: "/").last ?? "Unknown City"
     }
 }
