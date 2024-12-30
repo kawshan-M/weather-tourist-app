@@ -12,6 +12,8 @@ struct HomeView: View {
     @StateObject var airQualityVM = AirQualityViewModel()
     @EnvironmentObject var viewModel: ViewModel
     @State private var selectedMark: City?
+    @AppStorage("latitude") var latitude: Double = 51.5074
+    @AppStorage("longitude") var longitude: Double = -0.1278
     private var currentDate: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .full
@@ -52,7 +54,7 @@ struct HomeView: View {
                         }
                         .padding(.top, 5)
                         .task {
-                            await weatherVM.fetchWeatherData(lat: 51.5074, lon: -0.1278)
+                            await weatherVM.fetchWeatherData(lat: latitude, lon: longitude)
                         }
                         
                         VStack(spacing: 10){
@@ -124,7 +126,7 @@ struct HomeView: View {
                             }
                         }
                         .task {
-                            await airQualityVM.fetchAirQuality(lat: 51.5074, lon: -0.1278)
+                            await airQualityVM.fetchAirQuality(lat: latitude, lon: longitude)
                         }
                         
                         VStack {
@@ -157,6 +159,9 @@ struct HomeView: View {
                             .tint(.black)
                     }
                 }
+            }
+            .onAppear{
+                print(latitude,longitude)
             }
         }
         
