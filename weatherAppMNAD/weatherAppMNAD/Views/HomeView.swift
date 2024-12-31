@@ -132,7 +132,7 @@ struct HomeView: View {
                         VStack {
                             Divider()
                             
-                            NavigationLink(destination: MapView(selectedMark: $selectedMark)) {
+                            NavigationLink(destination: MapView()) {
                                 HStack{
                                     Text("Open In Maps")
                                     Spacer()

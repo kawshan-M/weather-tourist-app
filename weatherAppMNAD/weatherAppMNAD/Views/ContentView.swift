@@ -19,7 +19,7 @@ struct ContentView: View {
                     Image(systemName: "cloud.sun.fill")
                     Text("Now")
                 }
-            MapView(selectedMark: $selectedMark)
+            MapView()
                 .tabItem {
                     Image(systemName: "map.fill")
                     Text("Map")

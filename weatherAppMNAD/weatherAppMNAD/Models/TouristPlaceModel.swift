@@ -6,9 +6,11 @@
 //
 
 import Foundation
-import MapKit
+import CoreLocation
 
-struct TouristPlace {
+struct TouristPlace: Identifiable {
+    let id = UUID()
     let name: String
     let coordinate: CLLocationCoordinate2D
+    let address: String
 }
