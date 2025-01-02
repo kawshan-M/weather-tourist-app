@@ -97,7 +97,6 @@ class StoredPlacesViewModel: ObservableObject {
             }
         }
 
-        // Update the UI by removing from the array
         favoriteCities.remove(atOffsets: offsets)
     }
 }

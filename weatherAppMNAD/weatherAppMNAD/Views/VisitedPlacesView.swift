@@ -12,79 +12,72 @@ struct VisitedPlacesView: View {
     @StateObject var weatherVM = WeatherViewModel()
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var locationVM: StoredPlacesViewModel
-    @EnvironmentObject var viewModel: ViewModel
     @State var cityName: String = ""
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
     @State private var navigateToHome: Bool = false
+    @State private var isNewLocation: Bool = false
     @AppStorage("latitude") var latitude: Double = 51.5074
     @AppStorage("longitude") var longitude: Double = -0.1278
+    @AppStorage("currentCity") var currentCity: String = "London"
     
     var body: some View {
         NavigationStack {
             VStack {
-                TextField("Search for a city", text: $cityName, onCommit: {
+                TextField("Search for a city or airport", text: $cityName, onCommit: {
                     searchCity()
                 })
-                .textFieldStyle(.roundedBorder)
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color.gray.opacity(0.3))
+                .foregroundColor(.white)
+                .font(.system(size: 16, weight: .medium))
+                .cornerRadius(10)
                 .overlay(
-                    HStack{
+                    HStack {
                         Spacer()
                         Image(systemName: "mic.fill")
-                            .foregroundStyle(.gray)
+                            .foregroundColor(.white.opacity(0.8))
                             .padding(.trailing, 10)
                     }
                 )
+                .padding(.horizontal, 16) 
                 
                 if !locationVM.favoriteCities.isEmpty {
-                    ScrollView(showsIndicators: false) {
-                        VStack(spacing: 16) {
-                            ForEach(locationVM.favoriteCities) { city in
-                                Button(action: {
-                                    latitude = city.latitude
-                                    longitude = city.longitude
-                                    navigateToHome = true
-                                }) {
-                                    SavedCityCard(city: city.name, lat: city.latitude, lon: city.longitude)
-                                }
-                            }
-                            .onDelete { indexSet in                                locationVM.deleteCity(at: indexSet)
-                            }
-                        }
-                    }
-                    
                     List {
                         ForEach(locationVM.favoriteCities) { city in
                             Button(action: {
+                                currentCity = city.name
                                 latitude = city.latitude
                                 longitude = city.longitude
                                 navigateToHome = true
                             }) {
                                 SavedCityCard(city: city.name, lat: city.latitude, lon: city.longitude)
                             }
+                            .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                         }
                         .onDelete { indexSet in
                             locationVM.deleteCity(at: indexSet)
                         }
                     }
-                    .listStyle(PlainListStyle())
+                    .listStyle(.plain)
                 }
                 
                 Spacer()
                 
             }
-            .padding()
             .navigationTitle("Weather")
             .toolbar {
                 NavigationLink(destination: PlacesView()) {
-                    Image(systemName: "heart")
+                    Image(systemName: "gear")
                 }
             }
             .alert(isPresented: $showAlert) {
-                Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")) {
+                Alert(title: Text("Info"), message: Text(alertMessage), dismissButton: .default(Text("OK")) {
                     cityName = ""
+                    if alertMessage.contains("has been set") {
+                        navigateToHome = true
+                    }
                 })
             }
             .navigationDestination(isPresented: $navigateToHome) {
@@ -100,14 +93,26 @@ struct VisitedPlacesView: View {
             alertMessage = "Please enter a city name."
             return
         }
+        
+        if let existingCity = locationVM.favoriteCities.first(where: { $0.name.lowercased() == cityName.lowercased() }) {
+            currentCity = existingCity.name
+            latitude = existingCity.latitude
+            longitude = existingCity.longitude
+            showAlert = true
+            alertMessage = "\(existingCity.name) is already in your favorite list and has been set as your current location. and geo-coordinates is not required"
+            return
+        }
+
         locationVM.searchForCity(query: cityName) { result in
             switch result {
             case .success(let mapItem):
                 let coordinate = mapItem.placemark.coordinate
+                currentCity = mapItem.name ?? cityName
                 latitude = coordinate.latitude
                 longitude = coordinate.longitude
                 cityName = ""
-                navigateToHome = true
+                showAlert = true
+                alertMessage = "The location \(currentCity) (Lat: \(latitude), Lon: \(longitude)) has been set as your current location."
             case .failure(let error):
                 showAlert = true
                 alertMessage = error.localizedDescription
@@ -119,5 +124,4 @@ struct VisitedPlacesView: View {
 
 #Preview {
     VisitedPlacesView()
-        .environmentObject(ViewModel())
 }

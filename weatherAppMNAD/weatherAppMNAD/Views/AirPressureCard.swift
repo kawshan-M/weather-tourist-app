@@ -13,7 +13,7 @@ struct AirPressureCard: View {
     let maxPressure: Int = 1085
 
     var pressureProgress: Double {
-        // Normalize pressure value between minPressure and maxPressure
+        // Normalize pressure
         let range = Double(maxPressure - minPressure)
         let normalizedPressure = (Double(pressure) - Double(minPressure)) / range
         return normalizedPressure
@@ -39,13 +39,11 @@ struct AirPressureCard: View {
             // Pressure Gauge
             VStack {
                 ZStack {
-                    // Circular Gauge Background
                     Circle()
                         .stroke(lineWidth: 10)
                         .foregroundColor(.white.opacity(0.3))
                         .frame(width: 110, height: 110)
 
-                    // Circular Gauge Progress
                     Circle()
                         .trim(from: 0.0, to: pressureProgress)
                         .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round))
@@ -53,7 +51,6 @@ struct AirPressureCard: View {
                         .frame(width: 110, height: 110)
                         .rotationEffect(.degrees(-90)) // Rotate the progress arc
 
-                    // Pressure Value and Unit
                     VStack {
                         Text("\(pressure)")
                             .font(.title.bold())
@@ -65,7 +62,6 @@ struct AirPressureCard: View {
                     }
                 }
                 
-                // Low and High Labels
                 HStack {
                     Text("Low")
                         .font(.caption)

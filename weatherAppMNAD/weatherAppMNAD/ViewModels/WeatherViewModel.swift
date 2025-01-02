@@ -11,8 +11,6 @@ class WeatherViewModel: ObservableObject {
     @Published var currentWeather: CurrentWeather?
     @Published var hourlyWeatherUI: [HourlyWeatherUI] = []
     @Published var dailyWeatherUI: [DailyWeatherUI] = []
-//    @Published var hourlyWeather: [HourlyWeather] = []
-//    @Published var dailyWeather: [DailyWeather] = []
     @Published var timezone: String = "Unknown Location"
     @Published var cityName: String = "Location"
     @Published var tempMin: String = "--"

@@ -11,8 +11,8 @@ import SwiftData
 
 @main
 struct weatherAppMNADApp: App {
-    @StateObject var viewModel = ViewModel()
     @StateObject private var locationVM: StoredPlacesViewModel
+    @StateObject private var networkMonitor = NetworkMonitor()
     
     init() {
         FirebaseApp.configure()
@@ -24,8 +24,8 @@ struct weatherAppMNADApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(viewModel)
                 .environmentObject(locationVM)
+                .environmentObject(networkMonitor)
                 .modelContainer(PersistenceController.shared.container)
         }
     }

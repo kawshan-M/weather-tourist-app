@@ -191,23 +191,6 @@ struct Sys: Codable {
     let sunrise: Int
     let sunset: Int
 }
-//enum Main: String, Codable {
-//    case clear = "Clear"
-//    case clouds = "Clouds"
-//    case rain = "Rain"
-//    case mist = "Mist"
-//    case smoke = "Smoke"
-//    case haze = "Haze"
-//    case dust = "Dust"
-//    case fog = "Fog"
-//    case sand = "Sand"
-//    case ash = "Ash"
-//    case squall = "Squall"
-//    case tornado = "Tornado"
-//    case snow = "Snow"
-//    case drizzle = "Drizzle"
-//    case thunderstorm = "Thunderstorm"
-//}
 
 enum Description: String, Codable {
     case brokenClouds = "broken clouds"

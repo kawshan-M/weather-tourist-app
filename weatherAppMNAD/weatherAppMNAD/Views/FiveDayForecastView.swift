@@ -64,31 +64,6 @@ struct FiveDayForecastView: View {
                 }
             }
             
-//            HStack {
-//                Text(daytemp)
-//                    .font(.body.bold())
-//                    .foregroundColor(.white)
-//                
-//                //                GeometryReader { geometry in
-//                //                    ZStack(alignment: .leading) {
-//                //                        Capsule()
-//                //                            .fill(Color.white.opacity(0.3))
-//                //                            .frame(height: 4)
-//                //                        Capsule()
-//                //                            .fill(Color.orange)
-//                //                            .frame(width: geometry.size.width * CGFloat(0.5), height: 4)
-//                //                    }
-//                //                }
-//                //                .frame(height: 4)
-//                
-//                Text(nighttemp)
-//                    .font(.body.bold())
-//                    .foregroundColor(.white)
-//                    .padding(.trailing)
-//                
-//            }
-//            .frame(width: 150)
-            
         }
         .padding()
     }

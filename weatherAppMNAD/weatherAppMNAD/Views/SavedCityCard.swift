@@ -19,36 +19,39 @@ struct SavedCityCard: View {
 //                .frame(height: 130)
 //                .cornerRadius(15)
             
-            LinearGradient(gradient: Gradient(colors: [Color.blue, Color.white.opacity(0.5)]), startPoint: .top, endPoint: .bottom)
-                .frame(height: 130)
+            LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.white.opacity(0.8)]), startPoint: .leading, endPoint: .trailing)
+                .frame(height: 100)
                 .cornerRadius(15)
             
-            VStack{
+            VStack(alignment: .leading){
+                Text(city)
+                    .font(.title.bold())
+                    .foregroundStyle(.white)
+                
                 HStack{
-                    VStack(alignment: .leading){
-                        Text(city)
-                            .font(.title.bold())
+                    VStack{
+                        Text("Latitude")
+                            .font(.subheadline)
                             .foregroundStyle(.white)
                         
-                        Text("lat\(lat)")
+                        Text("Longitude")
+                            .font(.subheadline)
                             .foregroundStyle(.white)
+                        
                     }
                     
                     Spacer()
                     
-                    Text("27")
-                        .font(.largeTitle.bold())
-                        .foregroundStyle(.white)
-                }
-                
-                HStack{
-                    Text("lon\(lon)")
-                        .font(.subheadline)
-                        .foregroundStyle(.white)
-                    Spacer()
-                    Text("H:26 L:16")
-                        .font(.subheadline.bold())
-                        .foregroundColor(.white.opacity(0.8))
+                    VStack{
+                        Text("\(lat)")
+                            .font(.subheadline.bold())
+                            .foregroundColor(.white.opacity(0.8))
+                        
+                        Text("\(lon)")
+                            .font(.subheadline.bold())
+                            .foregroundColor(.white.opacity(0.8))
+                        
+                    }
                 }
             }
             .padding()
