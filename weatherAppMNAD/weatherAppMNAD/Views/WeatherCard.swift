@@ -10,14 +10,15 @@ import SwiftUI
 struct WeatherCard: View {
     let time: String
     let temperature: String
+    let icon: String
     
     var body: some View {
-        VStack(spacing: 20){
+        VStack(spacing: 10){
             Text(time)
                 .font(.title3.bold())
                 .foregroundColor(.white)
             
-            Image(systemName: "cloud.fill")
+            Image(systemName: icon.toWeatherIcon())
                 .font(.title2)
                 .foregroundColor(.yellow)
             

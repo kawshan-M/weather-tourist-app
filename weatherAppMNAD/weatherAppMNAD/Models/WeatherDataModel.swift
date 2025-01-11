@@ -192,66 +192,6 @@ struct Sys: Codable {
     let sunset: Int
 }
 
-enum Description: String, Codable {
-    case brokenClouds = "broken clouds"
-    case clearSky = "clear sky"
-    case fewClouds = "few clouds"
-    case lightRain = "light rain"
-    case moderateRain = "moderate rain"
-    case overcastClouds = "overcast clouds"
-    case scatteredClouds = "scattered clouds"
-    case thunderstormWithLightRain = "thunderstorm with light rain"
-    case thunderstormWithRain = "thunderstorm with rain"
-    case thunderstormWithHeavyRain = "thunderstorm with heavy rain"
-    case lightThunderstorm = "light thunderstorm"
-    case thunderstorm = "thunderstorm"
-    case heavyThunderstorm = "heavy thunderstorm"
-    case raggedThunderstorm = "ragged thunderstorm"
-    case thunderstormWithLightDrizzle = "thunderstorm with light drizzle"
-    case thunderstormWithDrizzle = "thunderstorm with drizzle"
-    case thunderstormWithHeavyDrizzle = "thunderstorm with heavy drizzle"
-    case heavyIntensityDrizzle = "heavy intensity drizzle"
-    case lightIntensityDrizzleRain = "light intensity drizzle rain"
-    case drizzleRain = "drizzle rain"
-    case heavyIntensityDrizzleRain = "heavy intensity drizzle rain"
-    case showerRainAndDrizzle = "shower rain and drizzle"
-    case heavyShowerRainAndDrizzle = "heavy shower rain and drizzle"
-    case showerDrizzle = "shower drizzle"
-    case heavyIntensityRain = "heavy intensity rain"
-    case veryHeavyRain = "very heavy rain"
-    case extremeRain = "exteme rain"
-    case freezingRain = "freezing rain"
-    case lightIntensityShowerRain = "light intensity shower rain"
-    case showerRain = "shower rain"
-    case heavyIntensityShowerRain = "heavy intensity shower rain"
-    case raggedShowerRain = "ragged shower rain"
-    case lightSnow = "light snow"
-    case Snow = "Snow"
-    case HeavySnow = "Heavy snow"
-    case Sleet = "Sleet"
-    case LightShowerSleet = "Light shower sleet"
-    case ShowerSleet = "Shower sleet"
-    case LightRainAndSnow = "Light rain and snow"
-    case RainAndSnow = "Rain and snow"
-    case LightShowerSnow = "Light shower snow"
-    case ShowerSnow = "Shower snow"
-    case HeavyShowerSnow = "Heavy shower snow"
-    case mist = "mist"
-    case Smoke = "Smoke"
-    case Haze = "Haze"
-    case sandDustWhirls = "sand/dust whirls"
-    case fog = "fog"
-    case sand = "sand"
-    case dust = "dXust"
-    case volcanicAsh = "volcanic ash"
-    case squalls = "squalls"
-    case tornado = "tornado"
-    case fewClouds1125 = "few clouds: 11-25%"
-    case scatteredClouds2550 = "scattered clouds: 25-50%"
-    case brokenClouds5184 = "broken clouds: 51-84%"
-    case overcastClouds85100 = "overcast clouds: 85-100%"
-}
-
 // MARK: - Daily
 struct Daily: Codable, Identifiable {
     let id = UUID()
@@ -300,6 +240,24 @@ struct Minutely: Codable {
     let precipitation: Double
 }
 
-
+extension String {
+    func toWeatherIcon() -> String {
+        switch self {
+        case "01d": return "sun.max.fill"
+        case "01n": return "moon.fill"
+        case "02d": return "cloud.sun.fill"
+        case "02n": return "cloud.moon.fill"
+        case "03d", "03n": return "cloud.fill"
+        case "04d", "04n": return "smoke.fill"
+        case "09d", "09n": return "cloud.rain.fill"
+        case "10d": return "cloud.sun.rain.fill"
+        case "10n": return "cloud.moon.rain.fill"
+        case "11d", "11n": return "cloud.bolt.fill"
+        case "13d", "13n": return "snowflake"
+        case "50d", "50n": return "cloud.fog.fill"
+        default: return "cloud.sun.fill"
+        }
+    }
+}
 
 

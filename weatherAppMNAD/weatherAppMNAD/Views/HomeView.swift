@@ -24,15 +24,22 @@ struct HomeView: View {
         NavigationStack {
             ZStack {
                 ZStack {
-                    LinearGradient(gradient: Gradient(colors: [Color.blue, Color.gray.opacity(0.5)]), startPoint: .top, endPoint: .bottom)
+                    LinearGradient(gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.1)]), startPoint: .top, endPoint: .bottom)
                         .ignoresSafeArea()
                         .transition(.opacity)
+                    
+//                    Image("background")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .ignoresSafeArea()
+//                        .transition(.opacity)
+                                        
                     
                     ScrollView(showsIndicators: false){
                         VStack(spacing: 20){
                             VStack(spacing: 5){
                                 if let current = weatherVM.currentWeather {
-                                    Text(weatherVM.cityName)
+                                    Text(currentCity)
                                         .font(.largeTitle.bold())
                                         .foregroundColor(.white)
                                     
@@ -71,7 +78,7 @@ struct HomeView: View {
                                 ScrollView(.horizontal,showsIndicators: false) {
                                     LazyHStack {
                                         ForEach(weatherVM.hourlyWeatherUI) { hour in
-                                            WeatherCard(time: hour.time, temperature: hour.temperature)
+                                            WeatherCard(time: hour.time, temperature: hour.temperature, icon: hour.icon)
                                                 .transition(.scale)
                                         }
                                     }
@@ -100,7 +107,7 @@ struct HomeView: View {
                                     ForEach(weatherVM.dailyWeatherUI) { days in
                                         Divider()
                                         
-                                        FiveDayForecastView(time: days.day, temperature: days.dayTemp, description: days.description, daytemp: days.dayTemp, nighttemp: days.nightTemp)
+                                        FiveDayForecastView(time: days.day, temperature: days.dayTemp, description: days.description, daytemp: days.dayTemp, nighttemp: days.nightTemp ,icon: days.icon)
                                     }
                                     
                                     
@@ -143,7 +150,7 @@ struct HomeView: View {
                                         Image(systemName: "location.square.fill")
                                     }
                                     .font(.body)
-                                    .foregroundColor(.white.opacity(0.7))
+                                    .foregroundColor(.secondary)
                                 }
                                 
                                 Divider()
@@ -152,7 +159,7 @@ struct HomeView: View {
                             VStack{
                                 Text("Weather for \(weatherVM.cityName)")
                                     .font(.body.bold())
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.secondary)
                             }
                         }
                     }

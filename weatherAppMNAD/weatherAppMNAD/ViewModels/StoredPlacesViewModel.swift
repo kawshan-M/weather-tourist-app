@@ -9,13 +9,18 @@ import Foundation
 import FirebaseFirestore
 import MapKit
 import SwiftData
+import SwiftUI
 
 class StoredPlacesViewModel: ObservableObject {
     @Published var storedPlaces: [String] = []
-    @Published var searchResults: [MKMapItem] = []
+    @Published var searchResults: [MKMapItem] = [] // Stores search results returned from MapKit's local search API.
     @Published var favoriteCities: [Town] = []
     
-    private var modelContext: ModelContext
+    @AppStorage("latitude") var latitude: Double = 51.5074
+    @AppStorage("longitude") var longitude: Double = -0.1278
+    @AppStorage("currentCity") var currentCity: String = "London"
+    
+    private var modelContext: ModelContext // The SwiftData context for managing database operations.
     
     init(context: ModelContext) {
         self.modelContext = context
@@ -85,18 +90,23 @@ class StoredPlacesViewModel: ObservableObject {
     }
     
     func deleteCity(at offsets: IndexSet) {
-        for index in offsets {
+        offsets.forEach { index in
             let city = favoriteCities[index]
             
             do {
                 modelContext.delete(city)
                 try modelContext.save()
-                fetchFavoriteCities()
             } catch {
                 print("Failed to delete city: \(error)")
             }
         }
 
         favoriteCities.remove(atOffsets: offsets)
+        
+        if favoriteCities.isEmpty {
+            currentCity = "London"
+            latitude = 51.5074
+            longitude = -0.1278
+        }
     }
 }

@@ -14,14 +14,16 @@ struct SavedCityCard: View {
     
     var body: some View {
         ZStack{
-//            Image(background)
-//                .resizable()
-//                .frame(height: 130)
-//                .cornerRadius(15)
-            
-            LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.white.opacity(0.8)]), startPoint: .leading, endPoint: .trailing)
-                .frame(height: 100)
-                .cornerRadius(15)
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(red: 110 / 255, green: 183 / 255, blue: 251 / 255),
+                    Color(red: 46 / 255, green: 118 / 255, blue: 223 / 255)
+                ]),
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+            .frame(height: 100)
+            .cornerRadius(15)
             
             VStack(alignment: .leading){
                 Text(city)
@@ -29,7 +31,7 @@ struct SavedCityCard: View {
                     .foregroundStyle(.white)
                 
                 HStack{
-                    VStack{
+                    VStack(alignment: .leading, spacing: 8){
                         Text("Latitude")
                             .font(.subheadline)
                             .foregroundStyle(.white)
@@ -42,7 +44,7 @@ struct SavedCityCard: View {
                     
                     Spacer()
                     
-                    VStack{
+                    VStack(alignment: .trailing, spacing: 8){
                         Text("\(lat)")
                             .font(.subheadline.bold())
                             .foregroundColor(.white.opacity(0.8))

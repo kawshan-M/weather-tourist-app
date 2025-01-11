@@ -9,17 +9,17 @@ import SwiftUI
 import MapKit
 
 struct VisitedPlacesView: View {
-    @StateObject var weatherVM = WeatherViewModel()
-    @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var locationVM: StoredPlacesViewModel
+    
     @State var cityName: String = ""
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
-    @State private var navigateToHome: Bool = false
-    @State private var isNewLocation: Bool = false
+    
     @AppStorage("latitude") var latitude: Double = 51.5074
     @AppStorage("longitude") var longitude: Double = -0.1278
     @AppStorage("currentCity") var currentCity: String = "London"
+    @AppStorage("selectedTab") private var selectedTab: Int = 0
+    @AppStorage("isDark") var isLightMode: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -30,14 +30,14 @@ struct VisitedPlacesView: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .background(Color.gray.opacity(0.3))
-                .foregroundColor(.white)
+                //.foregroundColor(.white)
                 .font(.system(size: 16, weight: .medium))
                 .cornerRadius(10)
                 .overlay(
                     HStack {
                         Spacer()
                         Image(systemName: "mic.fill")
-                            .foregroundColor(.white.opacity(0.8))
+                            .foregroundColor(.secondary.opacity(0.8))
                             .padding(.trailing, 10)
                     }
                 )
@@ -50,14 +50,21 @@ struct VisitedPlacesView: View {
                                 currentCity = city.name
                                 latitude = city.latitude
                                 longitude = city.longitude
-                                navigateToHome = true
+                                selectedTab = 0
                             }) {
                                 SavedCityCard(city: city.name, lat: city.latitude, lon: city.longitude)
                             }
                             .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-                        }
-                        .onDelete { indexSet in
-                            locationVM.deleteCity(at: indexSet)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    if let index = locationVM.favoriteCities.firstIndex(where: { $0.id == city.id }) {
+                                        locationVM.deleteCity(at: IndexSet(integer: index))
+                                    }
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                .tint(.red)
+                            }
                         }
                     }
                     .listStyle(.plain)
@@ -76,15 +83,12 @@ struct VisitedPlacesView: View {
                 Alert(title: Text("Info"), message: Text(alertMessage), dismissButton: .default(Text("OK")) {
                     cityName = ""
                     if alertMessage.contains("has been set") {
-                        navigateToHome = true
+                        selectedTab = 0
                     }
                 })
             }
-            .navigationDestination(isPresented: $navigateToHome) {
-                HomeView()
-            }
         }
-        .environment(\.colorScheme,.dark)
+        .environment(\.colorScheme, isLightMode ? .light : .dark)
     }
     
     private func searchCity() {

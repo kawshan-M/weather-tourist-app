@@ -30,6 +30,7 @@ struct AirQualityCard: View {
                 VStack{
                     Image("so")
                         .resizable()
+                        .cornerRadius(10)
                     
                     Text(airQuality?.components.so2 != nil ? "\(airQuality!.components.so2, specifier: "%.2f")" : "N/A")
                         .foregroundStyle(.white)
@@ -40,6 +41,7 @@ struct AirQualityCard: View {
                 VStack{
                     Image("no")
                         .resizable()
+                        .cornerRadius(10)
                     
                     Text(airQuality?.components.no != nil ? "\(airQuality!.components.no, specifier: "%.2f")" : "N/A")
                         .foregroundStyle(.white)
@@ -50,6 +52,7 @@ struct AirQualityCard: View {
                 VStack{
                     Image("vo")
                         .resizable()
+                        .cornerRadius(10)
                     
                     Text(airQuality?.components.pm2_5 != nil ? "\(airQuality!.components.pm2_5, specifier: "%.2f")" : "N/A")
                         .foregroundStyle(.white)
@@ -60,6 +63,7 @@ struct AirQualityCard: View {
                 VStack{
                     Image("pm")
                         .resizable()
+                        .cornerRadius(10)
                     
                     Text(airQuality?.components.pm10 != nil ? "\(airQuality!.components.pm10, specifier: "%.2f")" : "N/A")
                         .foregroundStyle(.white)

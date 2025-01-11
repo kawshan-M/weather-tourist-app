@@ -13,6 +13,7 @@ struct FiveDayForecastView: View {
     let description: String
     let daytemp: String
     let nighttemp: String
+    let icon: String
     
     var body: some View {
         HStack{
@@ -25,7 +26,7 @@ struct FiveDayForecastView: View {
             Spacer()
             
             VStack {
-                Image(systemName: "cloud.fill")
+                Image(systemName: icon.toWeatherIcon())
                     .font(.title2)
                     .foregroundColor(.white)
                     .frame(width: 30)
@@ -34,7 +35,6 @@ struct FiveDayForecastView: View {
                     .font(.caption2.bold())
                     .foregroundColor(.white)
             }
-//            .frame(width: 50, alignment: .leading)
             
             Spacer()
             
@@ -65,7 +65,7 @@ struct FiveDayForecastView: View {
             }
             
         }
-        .padding()
+        .padding(.horizontal)
     }
 }
 

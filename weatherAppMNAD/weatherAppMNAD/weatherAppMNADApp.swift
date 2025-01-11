@@ -8,6 +8,7 @@
 import SwiftUI
 import FirebaseCore
 import SwiftData
+import Firebase
 
 @main
 struct weatherAppMNADApp: App {

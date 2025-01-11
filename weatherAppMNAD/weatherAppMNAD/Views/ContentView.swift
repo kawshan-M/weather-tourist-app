@@ -10,7 +10,7 @@ import Network
 
 struct ContentView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
-    @State private var selectedTab: Int = 0
+    @AppStorage("selectedTab") private var selectedTab: Int = 0
     @Namespace private var animation
     
     var body: some View {
