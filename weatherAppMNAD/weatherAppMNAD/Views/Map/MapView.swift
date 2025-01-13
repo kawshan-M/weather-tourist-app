@@ -88,12 +88,12 @@ struct MapView: View {
                     DragGesture()
                         .onChanged { value in
                             let newHeight = max(200, UIScreen.main.bounds.height - value.location.y)
-                            sheetHeight = min(newHeight, UIScreen.main.bounds.height * 0.6)
+                            sheetHeight = min(newHeight, UIScreen.main.bounds.height * 0.5)
                         }
                         .onEnded { value in
                             withAnimation(.spring()) {
-                                if sheetHeight > UIScreen.main.bounds.height * 0.5 {
-                                    sheetHeight = UIScreen.main.bounds.height * 0.6
+                                if sheetHeight > UIScreen.main.bounds.height * 0.4 {
+                                    sheetHeight = UIScreen.main.bounds.height * 0.5
                                     isSheetExpanded = true
                                 } else {
                                     sheetHeight = 200

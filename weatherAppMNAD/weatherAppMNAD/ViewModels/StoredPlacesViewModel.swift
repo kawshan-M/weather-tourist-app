@@ -10,10 +10,11 @@ import FirebaseFirestore
 import MapKit
 import SwiftData
 import SwiftUI
+import FirebaseAuth
 
 class StoredPlacesViewModel: ObservableObject {
     @Published var storedPlaces: [String] = []
-    @Published var searchResults: [MKMapItem] = [] // Stores search results returned from MapKit's local search API.
+    @Published var searchResults: [MKMapItem] = []
     @Published var favoriteCities: [Town] = []
     
     @AppStorage("latitude") var latitude: Double = 51.5074
@@ -21,30 +22,76 @@ class StoredPlacesViewModel: ObservableObject {
     @AppStorage("currentCity") var currentCity: String = "London"
     
     private var modelContext: ModelContext // The SwiftData context for managing database operations.
+    private let db = Firestore.firestore()
+    
+    private var userId: String? {
+        Auth.auth().currentUser?.uid
+    }
     
     init(context: ModelContext) {
         self.modelContext = context
-        fetchFavoriteCities()
+        fetchFavoriteCitiesFromFirestore()
+    }
+    
+
+    func addPlace(name: String, latitude: Double, longitude: Double) {
+        guard let userId = userId else { return }
+        
+        let cityData: [String: Any] = [
+            "name": name,
+            "latitude": latitude,
+            "longitude": longitude
+        ]
+        
+        db.collection("users").document(userId).collection("favoriteCities")
+            .addDocument(data: cityData) { error in
+                if let error = error {
+                    print("Error adding city to Firestore: \(error)")
+                } else {
+                    let city = Town(name: name, latitude: latitude, longitude: longitude)
+                    if !self.favoriteCities.contains(where: { $0.name == name }) {
+                        self.modelContext.insert(city)
+                        try? self.modelContext.save()
+                        self.fetchFavoriteCities()
+                    }
+                     // Refresh the list
+                }
+            }
     }
 
-
-    private let db = Firestore.firestore()
-
-    func addPlace(name: String) {
-        db.collection("places").addDocument(data: ["name": name]) { error in
-            if let error = error {
-                print("Error adding document: \(error)")
+    func fetchFavoriteCitiesFromFirestore() {
+        guard let userId = userId else { return }
+        
+        db.collection("users").document(userId).collection("favoriteCities")
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("Error fetching favorite cities: \(error)")
+                } else if let snapshot = snapshot {
+                    self.clearSwiftData()  // Clear existing SwiftData entries
+                    
+                    for document in snapshot.documents {
+                        let data = document.data()
+                        let name = data["name"] as? String ?? ""
+                        let latitude = data["latitude"] as? Double ?? 0
+                        let longitude = data["longitude"] as? Double ?? 0
+                        
+                        let city = Town(name: name, latitude: latitude, longitude: longitude)
+                        self.modelContext.insert(city)
+                    }
+                    
+                    try? self.modelContext.save()
+                    
+                    self.fetchFavoriteCities()
+                }
             }
-        }
     }
-
-    func fetchStoredPlaces() {
-        db.collection("places").getDocuments { snapshot, error in
-            if let error = error {
-                print("Error fetching places: \(error)")
-            } else if let snapshot = snapshot {
-                self.storedPlaces = snapshot.documents.map { $0["name"] as? String ?? "" }
+    
+    private func clearSwiftData() {
+        if let cities = try? modelContext.fetch(FetchDescriptor<Town>()) {
+            for city in cities {
+                modelContext.delete(city)
             }
+            try? modelContext.save()
         }
     }
     
@@ -67,7 +114,7 @@ class StoredPlacesViewModel: ObservableObject {
             } else if let firstResult = response?.mapItems.first {
                 DispatchQueue.main.async {
                     self.searchResults = response?.mapItems ?? []
-                    self.addToFavorites(
+                    self.addPlace(
                         name: firstResult.name ?? "Unknown",
                         latitude: firstResult.placemark.coordinate.latitude,
                         longitude: firstResult.placemark.coordinate.longitude
@@ -79,26 +126,30 @@ class StoredPlacesViewModel: ObservableObject {
             }
         }
     }
-
-    func addToFavorites(name: String, latitude: Double, longitude: Double) {
-        let city = Town(name: name, latitude: latitude, longitude: longitude)
-        if !favoriteCities.contains(where: { $0.name == name }) {
-            modelContext.insert(city)
-            try? modelContext.save()
-            fetchFavoriteCities()
-        }
-    }
     
     func deleteCity(at offsets: IndexSet) {
+        guard let userId = userId else { return }
+        
         offsets.forEach { index in
             let city = favoriteCities[index]
             
-            do {
-                modelContext.delete(city)
-                try modelContext.save()
-            } catch {
-                print("Failed to delete city: \(error)")
-            }
+            db.collection("users").document(userId).collection("favoriteCities")
+                .whereField("name", isEqualTo: city.name)
+                .getDocuments { snapshot, error in
+                    if let error = error {
+                        print("Error finding city to delete: \(error)")
+                    } else if let document = snapshot?.documents.first {
+                        document.reference.delete { error in
+                            if let error = error {
+                                print("Error deleting city: \(error)")
+                            } else {
+                                self.modelContext.delete(city)
+                                try? self.modelContext.save()
+                                self.fetchFavoriteCities()
+                            }
+                        }
+                    }
+                }
         }
 
         favoriteCities.remove(atOffsets: offsets)

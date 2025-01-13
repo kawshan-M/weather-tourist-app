@@ -14,6 +14,7 @@ import Firebase
 struct weatherAppMNADApp: App {
     @StateObject private var locationVM: StoredPlacesViewModel
     @StateObject private var networkMonitor = NetworkMonitor()
+    @StateObject private var authVM = AuthViewModel()
     
     init() {
         FirebaseApp.configure()
@@ -27,6 +28,7 @@ struct weatherAppMNADApp: App {
             ContentView()
                 .environmentObject(locationVM)
                 .environmentObject(networkMonitor)
+                .environmentObject(authVM)
                 .modelContainer(PersistenceController.shared.container)
         }
     }
